@@ -9,7 +9,7 @@ def create_picID(user_id):
     req = urlopen('http://just-the-time.appspot.com/')
 
     time  = datetime.strptime(req.read().strip().decode('utf-8'), '%Y-%m-%d %H:%M:%S')
-    stringtime=str(time.year)+str(time.month)+str(time.day)+str(time.hour)+str(time.minute)+str(time.second)+'_'+str(ra);
+    stringtime=str(time.year)+str(time.month)+str(time.day)+str(time.hour)+str(time.minute)+str(time.second)+'_'+str(ra)
     return stringtime+str(user_id)
 
 

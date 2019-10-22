@@ -15,4 +15,4 @@ def create_picID(user_id):
 
 for x in range(0,10):
     print(create_picID("abc"))
-}
+

@@ -46,5 +46,19 @@ def login():
     return render_template("login.html")
 
 
+@app.route('/confirm_signup/<username>', methods=['POST', 'GET'])
+def confirm_signup(username):
+    if request.method == 'POST':
+        code = request.form['confirm_code']
+        u = Cognito(USER_POOL_ID, CLIENT_ID, REGION, username=username,
+                    access_key='dummy_not_used', secret_key='dummy_not_used')
+        try:
+            u.confirm_sign_up(code, username=username)
+        except ClientError as e:
+            flash(e.response.get('Error').get('Message'))
+            return redirect(url_for('confirm_signup', username=username))
+        return redirect(url_for('login', username=username))
+
+    return render_template('confirm_signup.html')
 if __name__ == '__main__':
     app.run(debug=True)

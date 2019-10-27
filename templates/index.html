@@ -1,5 +1,10 @@
 {% extends "base.html" %}
 {% block content %}
     {% include "navbar.html" %}
+    {% if user_login == True %}
+    <h1> Welcome</h1>
+    <p>Hello {{ username }}</p>
+    {% else %}
     <h1>Main page</h1>
+    {% endif %}
 {% endblock %}

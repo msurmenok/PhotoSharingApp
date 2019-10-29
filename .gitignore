@@ -104,3 +104,10 @@ venv.bak/
 .mypy_cache/
 
 .idea/
+
+#keys
+settings.py
+
+#for testing
+test.py
+test2.py

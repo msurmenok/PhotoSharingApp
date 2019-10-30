@@ -24,7 +24,7 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/signup', methods=['GET', 'POST'])
+@app.route('/signup', methods=['POST','GET'])
 def signup():
     if request.method == "POST":
 
@@ -34,12 +34,11 @@ def signup():
         password_confirm = request.form['confirm_password']
         if password != password_confirm:
             flash("Passwords don't match!")
-            return redirect(url_for('signup'))
+            return redirect(url_for('signup'), code=307)
         u.add_base_attributes(email=email)
         try:
             u.register(username, password)
-            return redirect(url_for("confirm_signup", username=username,
-                                    password=password))
+            return redirect(url_for("confirm_signup", username=username))
         except ClientError as e:
             flash(e.response.get('Error').get('Message'))
 
@@ -69,7 +68,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route('/confirm_signup/<username>', methods=['POST', 'GET'])
+@app.route('/confirm_signup/<username>', methods=['GET','POST'])
 def confirm_signup(username):
     if request.method == 'POST':
         code = request.form['confirm_code']

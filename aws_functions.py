@@ -5,6 +5,8 @@ import boto3
 import utils
 from botocore.exceptions import ClientError
 
+BUCKET_NAME = 'photosharingapp-test'
+
 
 def get_s3_image(image_id):
     """ Retrieve an object from AWS S3.
@@ -14,7 +16,7 @@ def get_s3_image(image_id):
     """
     s3 = boto3.client('s3')
     try:
-        return s3.get_object(Bucket='photosharingapp-test', Key=image_id)['Body'].read()
+        return s3.get_object(Bucket=BUCKET_NAME, Key=image_id)['Body'].read()
     except ClientError as e:
         print(e)
         return None

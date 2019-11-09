@@ -1,9 +1,10 @@
 from datetime import datetime
 from urllib.request import urlopen
+from random import randint
 
 
 def create_picID(user_id):
-    ra = round((random.random() * 10000000000))
+    ra = randint(0, 10000000000)
     req = urlopen('http://just-the-time.appspot.com/')
 
     time = datetime.strptime(req.read().strip().decode('utf-8'), '%Y-%m-%d %H:%M:%S')
@@ -12,20 +13,19 @@ def create_picID(user_id):
     return stringtime + str(user_id)
 
 
-for x in range(0, 10):
-    print(create_picID("abc"))
-
-
 def splitbytag(x):
     list_words = x.split(" ")
     list_tags = [word[1:] for word in list_words if word and word[0] == '#']
     return list_tags
 
 
-x = "#attention please! this is a #test"
-y = "hello from #cs218 where #we are making a #project using #AWS"
-z = ""
+if __name__ == '__main__':
+    for x in range(0, 10):
+        print(create_picID("abc"))
 
-print(splitbytag(x))
-print(splitbytag(y))
-print(splitbytag(z))
+    x = "#attention please! this is a #test"
+    y = "hello from #cs218 where #we are making a #project using #AWS"
+    z = ""
+    print(splitbytag(x))
+    print(splitbytag(y))
+    print(splitbytag(z))

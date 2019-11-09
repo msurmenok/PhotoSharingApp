@@ -1,10 +1,49 @@
 {% extends "base.html" %}
 {% block content %}
-    {% include "navbar.html" %}
+{% include "navbar.html" %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            {% if user_login == True %}
+            <h2> Welcome {{ username }}</h2>
+            {% else %}
+            <h2>Please log in to upload/view your images</h2>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <hr>
+        </div>
+    </div>
     {% if user_login == True %}
-    <h1> Welcome</h1>
-    <p>Hello {{ username }}</p>
-    {% else %}
-    <h1>Main page</h1>
+    <div class="row">
+        <div class="col-lg-8 col-sm-12">
+            <h3>Image Upload</h3>
+            <form method=post enctype=multipart/form-data>
+                <div class="form-group">
+                    <input name="file" type=file accept=image/jpeg" value="Upload Image" class="form-control-file">
+                </div>
+                <div class="form-group">
+                    <textarea name="description" class="form-control" placeholder="Description" rows="2"></textarea>
+                </div>
+                <div class="form-check">
+                    <input name="privacy" class="form-check-input" type="checkbox" id="gridCheck1" checked>
+                    <label class="form-check-label" for="gridCheck1">Keep this image private</label>
+                </div>
+                <div class="form-group"></div>
+                <div class="form-group">
+                    <button class="btn btn-primary" type="submit">
+                        Upload
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Show all images for this user here! -->
+        <img src="/images/robots.jpg">
+    </div>
     {% endif %}
+</div>
 {% endblock %}

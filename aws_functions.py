@@ -53,7 +53,7 @@ def store_image_data(image_binary, username, description, privacy):
     :param privacy: boolean
     :return: None
     """
-    image_id = utils.create_picID()
+    image_id = utils.create_picID(username)
     # store image on AWS S3
     store_image_object(image_id, image_binary)
     # TODO: Write DynamoDB code storing all the image information

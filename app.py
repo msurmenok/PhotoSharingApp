@@ -6,6 +6,8 @@ import aws_functions
 from settings import *
 from botocore.exceptions import ClientError
 
+from utils import allowed_file
+
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
@@ -19,7 +21,30 @@ def index():
                     refresh_token=session.get('refresh_token'),
                     access_token=session.get('access_token'),
                     username=session.get('username'))
+        username = session.get('username')
+        # Handle POST request
+        if request.method == 'POST':
+            # Retrieve description and privacy values
+            description = request.form["description"]
+            privacy = False
+            if request.form.get("privacy"):
+                privacy = True
 
+            # Retrieve image binary
+            if 'image_binary' not in request.files:
+                print('No file part')
+                return redirect(request.url)
+            file = request.files['image_binary']
+            if file.filename == '':
+                print("No selected file")
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                image_binary = file.read()
+                aws_functions.store_image_data(image_binary, username, description, privacy)
+                print("ALL DONE. Uploaded " + description)
+                return redirect(request.url)
+        # GET request
         return render_template("index.html", username=u.username,
                                user_login=session.get('user_login'))
     return render_template('index.html')

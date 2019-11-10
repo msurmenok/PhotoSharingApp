@@ -2,6 +2,8 @@ from datetime import datetime
 from urllib.request import urlopen
 from random import randint
 
+ALLOWED_EXTENSIONS = {'jpg', 'jpeg'}
+
 
 def create_picID(user_id):
     ra = randint(0, 10000000000)
@@ -29,3 +31,8 @@ if __name__ == '__main__':
     print(splitbytag(x))
     print(splitbytag(y))
     print(splitbytag(z))
+
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS

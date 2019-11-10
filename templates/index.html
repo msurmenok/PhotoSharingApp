@@ -18,7 +18,7 @@
     </div>
     {% if user_login == True %}
     <div class="row">
-        <div class="col-lg-8 col-sm-12">
+        <div class="col-12">
             <h3>Image Upload</h3>
             <form method=post enctype=multipart/form-data>
                 <div class="form-group">
@@ -41,18 +41,16 @@
         </div>
     </div>
     <div class="row">
-        <div class="card-deck">
-            <!-- Show all images for this user here! -->
-            {% for image_data in images_data %}
-            <div class="card" style="width: 20rem;">
-                <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
-                <div class="card-body">
-                    <h6 class="card-title">by   {{ image_data.username }}</h6>
-                    <p class="card-text">{{ image_data.description }}</p>
-                </div>
-            </div>
-            {% endfor %}
+        <!-- Show all images for this user here! -->
+        {% for image_data in images_data %}
+
+        <div class="img-thumbnail col-lg-4 col-sm-6">
+            <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
+                <h6 class="card-title">by {{ image_data.username }}</h6>
+                <p class="card-text">{{ image_data.description }}</p>
         </div>
+        {% endfor %}
+
     </div>
     {% endif %}
 </div>

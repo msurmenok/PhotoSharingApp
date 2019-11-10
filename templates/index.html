@@ -41,8 +41,18 @@
         </div>
     </div>
     <div class="row">
-        <!-- Show all images for this user here! -->
-        <img src="/images/robots.jpg">
+        <div class="card-deck">
+            <!-- Show all images for this user here! -->
+            {% for image_data in images_data %}
+            <div class="card" style="width: 20rem;">
+                <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
+                <div class="card-body">
+                    <h6 class="card-title">by   {{ image_data.username }}</h6>
+                    <p class="card-text">{{ image_data.description }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
     </div>
     {% endif %}
 </div>

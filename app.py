@@ -45,8 +45,10 @@ def index():
                 print("ALL DONE. Uploaded " + description)
                 return redirect(request.url)
         # GET request
+        # get all Image objects
+        images_data = aws_functions.get_all_images("Kot")
         return render_template("index.html", username=u.username,
-                               user_login=session.get('user_login'))
+                               user_login=session.get('user_login'), images_data=images_data)
     return render_template('index.html')
 
 

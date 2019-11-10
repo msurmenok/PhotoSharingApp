@@ -15,8 +15,8 @@ def create_picID(user_id):
     return stringtime + str(user_id)
 
 
-def splitbytag(x):
-    list_words = x.split(" ")
+def split_by_tag(description):
+    list_words = description.split(" ")
     list_tags = [word[1:] for word in list_words if word and word[0] == '#']
     return list_tags
 
@@ -28,9 +28,9 @@ if __name__ == '__main__':
     x = "#attention please! this is a #test"
     y = "hello from #cs218 where #we are making a #project using #AWS"
     z = ""
-    print(splitbytag(x))
-    print(splitbytag(y))
-    print(splitbytag(z))
+    print(split_by_tag(x))
+    print(split_by_tag(y))
+    print(split_by_tag(z))
 
 
 def allowed_file(filename):

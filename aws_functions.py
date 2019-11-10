@@ -25,10 +25,16 @@ def get_s3_image(image_id):
 def store_image_object(image_id, image_binary):
     """ Store image on AWS S3. image_id should be the same as for DynamoDB.
 
-    :param image_binary: binary file from user
+    :param image_id: string that uniquely identifies this image
+    :param image_binary: binary file from user, jpg or jpeg
     :return None
     """
-    pass
+    image_name = image_id + ".jpg"
+    s3_client = boto3.client('s3')
+    try:
+        response = s3_client.upload_fileobj(image_binary, BUCKET_NAME, image_name)
+    except ClientError as e:
+        print(e)
 
 
 def get_all_images(username):
@@ -58,4 +64,5 @@ def store_image_data(image_binary, username, description, privacy):
     store_image_object(image_id, image_binary)
     # TODO: Write DynamoDB code storing all the image information
     # split tags
+    tags = utils.split_by_tag(description)
     # store image_id, description, tags, username, etc on DynamoDB

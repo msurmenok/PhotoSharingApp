@@ -40,7 +40,7 @@ def index():
                 flash('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
-                image_binary = file.read()
+                image_binary = file
                 aws_functions.store_image_data(image_binary, username, description, privacy)
                 print("ALL DONE. Uploaded " + description)
                 return redirect(request.url)

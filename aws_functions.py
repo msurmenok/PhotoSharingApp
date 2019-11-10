@@ -44,7 +44,7 @@ def get_all_images(username):
     :param username: owner's name associated with images
     :return: array of strings, names of all images for this user
     """
-    # TODO: return list of image_id for this user
+    # TODO: return list of image_id (array of strings) for this user
     pass
 
 
@@ -62,7 +62,7 @@ def store_image_data(image_binary, username, description, privacy):
     image_id = utils.create_picID(username)
     # store image on AWS S3
     store_image_object(image_id, image_binary)
-    # TODO: Write DynamoDB code storing all the image information
+    # TODO: Write DynamoDB code storing all the image information (do not use/store image_binary in DynamoDB)
     # split tags
     tags = utils.split_by_tag(description)
     # store image_id, description, tags, username, etc on DynamoDB

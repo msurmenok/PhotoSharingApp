@@ -1,8 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, \
-    flash
+    flash, make_response, abort
 from warrant import Cognito
+
+import aws_functions
 from settings import *
 from botocore.exceptions import ClientError
+
+from utils import allowed_file
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -17,14 +21,48 @@ def index():
                     refresh_token=session.get('refresh_token'),
                     access_token=session.get('access_token'),
                     username=session.get('username'))
+        username = session.get('username')
+        # Handle POST request
+        if request.method == 'POST':
+            # Retrieve description and privacy values
+            description = request.form["description"]
+            privacy = False
+            if request.form.get("privacy"):
+                privacy = True
 
+            # Retrieve image binary
+            if 'image_binary' not in request.files:
+                print('No file part')
+                return redirect(request.url)
+            file = request.files['image_binary']
+            if file.filename == '':
+                print("No selected file")
+                flash('No selected file')
+                return redirect(request.url)
+            if file and allowed_file(file.filename):
+                image_binary = file
+                aws_functions.store_image_data(image_binary, username, description, privacy)
+                print("ALL DONE. Uploaded " + description)
+                return redirect(request.url)
+        # GET request
+        # get all Image objects
+        images_data = aws_functions.get_all_images(username)
         return render_template("index.html", username=u.username,
-                               user_login=session.get('user_login'))
-
+                               user_login=session.get('user_login'), images_data=images_data)
     return render_template('index.html')
 
 
-@app.route('/signup', methods=['POST','GET'])
+@app.route('/images/<image_id>')
+def get_image(image_id):
+    image_binary = aws_functions.get_s3_image(image_id)
+    if image_binary:
+        response = make_response(image_binary)
+        response.headers.set('Content-Type', 'image/jpeg')
+        return response
+    abort(404)
+
+
+@app.route('/signup', methods=['POST', 'GET'])
 def signup():
     if request.method == "POST":
 
@@ -68,7 +106,7 @@ def login():
     return render_template("login.html")
 
 
-@app.route('/confirm_signup/<username>', methods=['GET','POST'])
+@app.route('/confirm_signup/<username>', methods=['GET', 'POST'])
 def confirm_signup(username):
     if request.method == 'POST':
         code = request.form['confirm_code']

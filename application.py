@@ -46,9 +46,11 @@ def index():
                 return redirect(request.url)
         # GET request
         # get all Image objects
-        images_data = aws_functions.get_all_images(username)
-        return render_template("index.html", username=u.username,
-                               user_login=session.get('user_login'), images_data=images_data)
+        # images_data = aws_functions.get_all_images(username)
+        # return render_template("index.html", username=u.username,
+        #                        user_login=session.get('user_login'), images_data=images_data)
+        return render_template("index.html", username=u.username)
+
     return render_template('index.html')
 
 

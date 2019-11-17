@@ -106,7 +106,7 @@ venv.bak/
 .idea/
 
 #keys
-#settings.py
+settings.py
 
 #for testing
 test.py

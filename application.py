@@ -8,10 +8,9 @@ from botocore.exceptions import ClientError
 
 from utils import allowed_file
 
-app = Flask(__name__)
+application = app = Flask(__name__)
 
-app.config['SECRET_KEY'] = SECRET_KEY
-application = app
+application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
 
 

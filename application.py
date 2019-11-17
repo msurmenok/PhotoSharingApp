@@ -9,7 +9,9 @@ from botocore.exceptions import ClientError
 from utils import allowed_file
 
 app = Flask(__name__)
+
 app.config['SECRET_KEY'] = SECRET_KEY
+application = app
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
 
 
@@ -137,4 +139,4 @@ def logout():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)

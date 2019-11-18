@@ -20,10 +20,6 @@ application = app = Flask(__name__)
 application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
 
-
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def index():
 
@@ -61,10 +57,10 @@ def index():
                 return redirect(request.url)
         # GET request
         # get all Image objects
-        # images_data = aws_functions.get_all_images(username)
-        # return render_template("index.html", username=u.username,
-        #                        user_login=session.get('user_login'), images_data=images_data)
-        return render_template("index.html", username=u.username)
+        images_data = aws_functions.get_all_images(username)
+        return render_template("index.html", username=u.username,
+                               user_login=session.get('user_login'), images_data=images_data)
+        #return render_template("index.html", username=u.username)
 
     return render_template('index.html')
 

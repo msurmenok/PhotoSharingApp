@@ -10,7 +10,7 @@ from boto3.dynamodb.conditions import Key, Attr
 TABLE_NAME = "Image"
 
 BUCKET_NAME = 'photo-sharing-app-project'
-
+REGION_NAME ='us-west-2'
 
 def get_s3_image(image_id):
     """ Retrieve an object from AWS S3.
@@ -18,7 +18,7 @@ def get_s3_image(image_id):
     :param image_id: string
     :return binary representation of an object. If it does not exist, return None
     """
-    s3 = boto3.client('s3')
+    s3 = boto3.client('s3', region_name=REGION_NAME)
     try:
         return s3.get_object(Bucket=BUCKET_NAME, Key=image_id)['Body'].read()
     except ClientError as e:
@@ -34,7 +34,7 @@ def store_image_object(image_id, image_binary):
     :return None
     """
     image_name = image_id + ".jpg"
-    s3_client = boto3.client('s3')
+    s3_client = boto3.client('s3', region_name=REGION_NAME)
     try:
         response = s3_client.upload_fileobj(image_binary, BUCKET_NAME, image_name)
     except ClientError as e:
@@ -51,7 +51,7 @@ def get_all_images(username):
     # TODO: retrieve information from DynamoDB and create array of objects of type Image
     # TODO: Remove everything below after implementing DynamoDB version
     # Retrieving all files from S3 and faking other data for Image object
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     response = table.scan(
         FilterExpression=Attr('username').eq(username)
@@ -98,7 +98,7 @@ def store_image_data(image_binary, username, description, privacy):
     # get tags from the description
     tags = utils.split_by_tag(description)
     # store image_id, description, tags, username, etc on DynamoDB
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb',  region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     try:
         response = table.put_item(

@@ -14,7 +14,6 @@ CLIENT_ID = os.environ['CLIENT_ID']
 REGION = os.environ['REGION']
 SECRET_KEY = os.environ['SECRET_KEY']
 
-region_name='us-west-2'
 application = app = Flask(__name__)
 
 application.config['SECRET_KEY'] = SECRET_KEY

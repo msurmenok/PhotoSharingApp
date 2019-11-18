@@ -5,17 +5,32 @@ from warrant import Cognito
 import aws_functions
 from settings import *
 from botocore.exceptions import ClientError
+import boto3
 
 from utils import allowed_file
+import os
+
+USER_POOL_ID = os.environ['USER_POOL_ID']
+CLIENT_ID = os.environ['CLIENT_ID']
+REGION = os.environ['REGION']
+SECRET_KEY = os.environ['SECRET_KEY']
 
 application = app = Flask(__name__)
 
 application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
+BUCKETNAME = "elasticbeanstalk-us-east-1-648558750880"
+
+
+
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
+
+    s3 = boto3.client('s3')
+
+
     if session.get('user_login') is True:
         u = Cognito(USER_POOL_ID, CLIENT_ID, REGION,
                     id_token=session.get('id_token'),

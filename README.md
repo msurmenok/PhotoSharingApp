@@ -14,5 +14,7 @@ for load testing:
 
 ## Running load balancer tests on local machine
 change directory to load_tests `cd load_tests`
+
 run command `locust`
-open locust GUI on http://127.0.0.1:8089 
+
+open locust GUI on http://127.0.0.1:8089 and specify the number of users and the url of the web-site

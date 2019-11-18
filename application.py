@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect, url_for, session, \
 from warrant import Cognito
 
 import aws_functions
-from settings import *
+#from settings import *
 from botocore.exceptions import ClientError
 import boto3
 
@@ -19,7 +19,6 @@ application = app = Flask(__name__)
 
 application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
-BUCKETNAME = "elasticbeanstalk-us-east-1-648558750880"
 
 
 

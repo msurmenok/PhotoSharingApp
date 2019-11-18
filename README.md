@@ -11,3 +11,8 @@ working with AWS services:
 
 for load testing:
 `pip install locustio`
+
+## Running load balancer tests on local machine
+change directory to load_tests `cd load_tests`
+run command `locust`
+open locust GUI on http://127.0.0.1:8089 

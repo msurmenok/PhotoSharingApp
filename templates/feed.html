@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+{% include "navbar.html" %}
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2> News Feed</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <hr>
+        </div>
+    </div>
+    <div class="row">
+        <!-- Show all images for this user here! -->
+        {% for image_data in images_data %}
+        <div class="img-thumbnail col-lg-4 col-sm-6">
+            <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
+            <h6 class="card-title">by {{ image_data.username }}</h6>
+            <p class="card-text">{{ image_data.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

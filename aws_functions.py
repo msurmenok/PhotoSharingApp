@@ -75,7 +75,7 @@ def get_all_public_images():
 
     :return: array of IMage objects that contains all the information about each public image
     """
-    dynamodb = boto3.resource('dynamodb')
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     response = table.scan(
         FilterExpression=Attr('privacy').eq(True)

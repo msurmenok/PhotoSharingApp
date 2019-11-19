@@ -1,10 +1,12 @@
+"""
+SJSU CS 218 Fall 2019 TEAM 4
+"""
 from flask import Flask, render_template, request, redirect, url_for, session, \
     flash, make_response, abort
 from warrant import Cognito
 
 import aws_functions
 from botocore.exceptions import ClientError
-
 
 from utils import allowed_file
 import os
@@ -18,6 +20,7 @@ application = app = Flask(__name__)
 
 application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -55,7 +58,7 @@ def index():
         images_data = aws_functions.get_all_user_images(username)
         return render_template("index.html", username=u.username,
                                user_login=session.get('user_login'), images_data=images_data)
-        #return render_template("index.html", username=u.username)
+        # return render_template("index.html", username=u.username)
 
     return render_template('index.html')
 

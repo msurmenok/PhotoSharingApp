@@ -1,5 +1,7 @@
 """
-Call AWS services from here!
+SJSU CS 218 Fall 2019 TEAM 4
+
+Call AWS S3 and DynamoDB services from here.
 """
 import boto3
 import utils
@@ -10,7 +12,8 @@ from boto3.dynamodb.conditions import Key, Attr
 TABLE_NAME = "Image"
 
 BUCKET_NAME = 'photo-sharing-app-project'
-REGION_NAME ='us-west-2'
+REGION_NAME = 'us-west-2'
+
 
 def get_s3_image(image_id):
     """ Retrieve an object from AWS S3.
@@ -108,7 +111,7 @@ def store_image_data(image_binary, username, description, privacy):
     # get tags from the description
     tags = utils.split_by_tag(description)
     # store image_id, description, tags, username, etc on DynamoDB
-    dynamodb = boto3.resource('dynamodb',  region_name=REGION_NAME)
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     try:
         response = table.put_item(

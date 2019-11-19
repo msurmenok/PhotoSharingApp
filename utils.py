@@ -1,3 +1,9 @@
+"""
+SJSU CS 218 Fall 2019 TEAM 4
+
+Set of utility functions.
+"""
+
 from datetime import datetime
 from urllib.request import urlopen
 from random import randint

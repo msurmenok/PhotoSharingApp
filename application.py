@@ -3,15 +3,21 @@ from flask import Flask, render_template, request, redirect, url_for, session, \
 from warrant import Cognito
 
 import aws_functions
-from settings import *
 from botocore.exceptions import ClientError
 
+
 from utils import allowed_file
+import os
 
-app = Flask(__name__)
-app.config['SECRET_KEY'] = SECRET_KEY
+USER_POOL_ID = os.environ['USER_POOL_ID']
+CLIENT_ID = os.environ['CLIENT_ID']
+REGION = os.environ['REGION']
+SECRET_KEY = os.environ['SECRET_KEY']
+
+application = app = Flask(__name__)
+
+application.config['SECRET_KEY'] = SECRET_KEY
 u = Cognito(USER_POOL_ID, CLIENT_ID, user_pool_region=REGION)
-
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -49,6 +55,8 @@ def index():
         images_data = aws_functions.get_all_user_images(username)
         return render_template("index.html", username=u.username,
                                user_login=session.get('user_login'), images_data=images_data)
+        #return render_template("index.html", username=u.username)
+
     return render_template('index.html')
 
 
@@ -142,4 +150,4 @@ def news_feed():
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    application.run(debug=True)

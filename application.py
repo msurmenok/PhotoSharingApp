@@ -52,7 +52,7 @@ def index():
                 return redirect(request.url)
         # GET request
         # get all Image objects
-        images_data = aws_functions.get_all_images(username)
+        images_data = aws_functions.get_all_user_images(username)
         return render_template("index.html", username=u.username,
                                user_login=session.get('user_login'), images_data=images_data)
         #return render_template("index.html", username=u.username)
@@ -135,6 +135,13 @@ def logout():
     if session.get('user_login'):
         session.clear()
     return render_template('index.html')
+
+
+@app.route('/newsfeed')
+def news_feed():
+    images_data = aws_functions.get_all_public_images()
+    return render_template("feed.html", username=u.username,
+                           user_login=session.get('user_login'), images_data=images_data)
 
 
 # @app.route('/confirm_signup')

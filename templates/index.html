@@ -4,6 +4,7 @@
 <div class="container">
     <div class="row">
         <div class="col">
+            <br>
             {% if user_login == True %}
             <h2> Welcome {{ username }}</h2>
             {% else %}
@@ -20,6 +21,7 @@
     <div class="row">
         <div class="col-12">
             <h3>Image Upload</h3>
+            <br>
             <form method=post enctype=multipart/form-data>
                 <div class="form-group">
                     <input name="image_binary" type=file value="Upload Image" class="form-control-file">
@@ -46,8 +48,9 @@
 
         <div class="img-thumbnail col-lg-4 col-sm-6">
             <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
-                <h6 class="card-title">by {{ image_data.username }}</h6>
-                <p class="card-text">{{ image_data.description }}</p>
+            <div><br><h6>by {{ image_data.username }}</h6></div>
+            <div><p class="card-text">{{ image_data.description }}</p></div>
+            <div><a href="#!" onclick="deleteImage(this, '{{ image_data.image_id }}')">Delete</a></div>
         </div>
         {% endfor %}
 

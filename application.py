@@ -147,6 +147,12 @@ def news_feed():
                            user_login=session.get('user_login'), images_data=images_data)
 
 
+@app.route('/delete/<image_id>')
+def delete_image(image_id):
+    aws_functions.get_dynamodb_image(image_id)
+
+
+
 # @app.route('/confirm_signup')
 # def confirm():
 #     return render_template('confirm_signup.html')

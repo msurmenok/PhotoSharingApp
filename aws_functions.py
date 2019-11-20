@@ -29,6 +29,29 @@ def get_s3_image(image_id):
         return None
 
 
+def get_dynamodb_image(image_id):
+    """
+    Retrieve an image data with the specific key from dynamo_db
+
+    :param image_id: string, image key in dynamodb
+    :return: object Image
+    """
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+    table = dynamodb.Table(TABLE_NAME)
+    response = table.get_item(
+        Key={
+            'image_id': image_id
+        }
+    )
+    item = response['Item']
+    image_id = item["image_id"]
+    username = item["username"]
+    description = item["description"]
+    tags = item["tags"]
+    privacy = item["privacy"]
+    return Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy)
+
+
 def store_image_object(image_id, image_binary):
     """ Store image on AWS S3. image_id should be the same as for DynamoDB.
 
@@ -65,7 +88,7 @@ def get_all_user_images(username):
         tags = obj["tags"]
         privacy = obj["privacy"]
         images_data.append(
-            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=True))
+            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy))
     return images_data
 
 
@@ -90,7 +113,7 @@ def get_all_public_images():
         username = obj["username"]
         print(username)
         images_data.append(
-            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=True))
+            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy))
     return images_data
 
 

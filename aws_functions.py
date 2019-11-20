@@ -67,6 +67,27 @@ def store_image_object(image_id, image_binary):
         print(e)
 
 
+def delete_image_object(image_id):
+    """
+    Delete image from AWS S3.
+
+    :param image_id: string that uniquely identifies this image
+    :return: True if deleted successfully
+    """
+    image_name = image_id + ".jpg"
+    print(image_name)
+    s3 = boto3.resource("s3", region_name=REGION_NAME)
+    try:
+        obj = s3.Object(BUCKET_NAME, image_name)
+        response = obj.delete()
+    except ClientError as e:
+        print(e)
+        return False
+    print("Deleted from S3!")
+    print(response)
+    return True
+
+
 def get_all_user_images(username):
     """
     Retrieve all image names from DynamoDB
@@ -101,7 +122,7 @@ def get_all_public_images():
     dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     response = table.scan(
-        FilterExpression=Attr('privacy').eq(True)
+        FilterExpression=Attr('privacy').eq(False)
     )
 
     images_data = list()
@@ -111,7 +132,6 @@ def get_all_public_images():
         tags = obj["tags"]
         privacy = obj["privacy"]
         username = obj["username"]
-        print(username)
         images_data.append(
             Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy))
     return images_data
@@ -149,3 +169,24 @@ def store_image_data(image_binary, username, description, privacy):
     except ClientError as e:
         print(e)
     print("End of store_image_data")
+
+
+def delete_image_data(image_id):
+    """
+    Delete information about specific image from DynamoDB and S3.
+
+    :param image_id: string that uniquely identifies image data in DynamoDB and S3
+    :return: None
+    """
+    # If was successfully deleted from S3 then delete from DynamoDB
+    if delete_image_object(image_id):
+        dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+        table = dynamodb.Table(TABLE_NAME)
+        try:
+            table.delete_item(
+                Key={
+                    'image_id': image_id
+                }
+            )
+        except ClientError as e:
+            print(e)

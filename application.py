@@ -149,8 +149,12 @@ def news_feed():
 
 @app.route('/delete/<image_id>')
 def delete_image(image_id):
-    aws_functions.get_dynamodb_image(image_id)
-
+    image_data = aws_functions.get_dynamodb_image(image_id)
+    if session.get('user_login') and session.get('username') == image_data.username:
+        # check that the current user is an owner of the image
+        # delete image from dynamodb and s3
+        aws_functions.delete_image_data(image_id)
+    return redirect((url_for('index')))
 
 
 # @app.route('/confirm_signup')

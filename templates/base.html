@@ -24,11 +24,11 @@
 <footer class="footer"></footer>
 <script>
     function deleteImage(x, image_id) {
-        alert(image_id + " deleted");
-        //var xhr = new XMLHttpRequest();
-        //var url = "/delete/" + image_id;
-        //xhr.open("GET", url, true);
-        //xhr.send(null);
+        x.parentNode.parentNode.style.display = 'none';
+        let xhr = new XMLHttpRequest();
+        let url = "/delete/" + image_id;
+        xhr.open("GET", url, true);
+        xhr.send(null);
     }
 </script>
 </body>

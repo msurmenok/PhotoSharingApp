@@ -41,17 +41,15 @@ def index():
 
             # Retrieve image binary
             if 'image_binary' not in request.files:
-                print('No file part')
+                flash('No file part')
                 return redirect(request.url)
             file = request.files['image_binary']
             if file.filename == '':
-                print("No selected file")
                 flash('No selected file')
                 return redirect(request.url)
             if file and allowed_file(file.filename):
                 image_binary = file
                 aws_functions.store_image_data(image_binary, username, description, privacy)
-                print("ALL DONE. Uploaded " + description)
                 return redirect(request.url)
         # GET request
         # get all Image objects
@@ -61,6 +59,25 @@ def index():
         # return render_template("index.html", username=u.username)
 
     return render_template('index.html')
+
+
+@app.route('/edit/<image_id>', methods=['GET', 'POST'])
+def edit_image(image_id):
+    image_data = aws_functions.get_dynamodb_image(image_id)
+
+    if session.get('user_login') and session.get('username') == image_data.username:
+        username = session.get('username')
+        if request.method == 'GET':
+            return render_template("edit.html", image_data=image_data)
+        # Handle POST request
+        if request.method == 'POST':
+            description = request.form["description"]
+            privacy = False
+            if request.form.get("privacy"):
+                privacy = True
+            aws_functions.update_image_data(image_id, description, privacy)
+            return redirect(url_for('index'))
+    return redirect(url_for('index'))
 
 
 @app.route('/images/<image_id>')
@@ -145,6 +162,16 @@ def news_feed():
     images_data = aws_functions.get_all_public_images()
     return render_template("feed.html", username=u.username,
                            user_login=session.get('user_login'), images_data=images_data)
+
+
+@app.route('/delete/<image_id>')
+def delete_image(image_id):
+    image_data = aws_functions.get_dynamodb_image(image_id)
+    if session.get('user_login') and session.get('username') == image_data.username:
+        # check that the current user is an owner of the image
+        # delete image from dynamodb and s3
+        aws_functions.delete_image_data(image_id)
+    return redirect((url_for('index')))
 
 
 # @app.route('/confirm_signup')

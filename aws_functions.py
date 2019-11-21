@@ -29,6 +29,29 @@ def get_s3_image(image_id):
         return None
 
 
+def get_dynamodb_image(image_id):
+    """
+    Retrieve an image data with the specific key from dynamo_db
+
+    :param image_id: string, image key in dynamodb
+    :return: object Image
+    """
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+    table = dynamodb.Table(TABLE_NAME)
+    response = table.get_item(
+        Key={
+            'image_id': image_id
+        }
+    )
+    item = response['Item']
+    image_id = item["image_id"]
+    username = item["username"]
+    description = item["description"]
+    tags = item["tags"]
+    privacy = item["privacy"]
+    return Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy)
+
+
 def store_image_object(image_id, image_binary):
     """ Store image on AWS S3. image_id should be the same as for DynamoDB.
 
@@ -42,6 +65,27 @@ def store_image_object(image_id, image_binary):
         response = s3_client.upload_fileobj(image_binary, BUCKET_NAME, image_name)
     except ClientError as e:
         print(e)
+
+
+def delete_image_object(image_id):
+    """
+    Delete image from AWS S3.
+
+    :param image_id: string that uniquely identifies this image
+    :return: True if deleted successfully
+    """
+    image_name = image_id + ".jpg"
+    print(image_name)
+    s3 = boto3.resource("s3", region_name=REGION_NAME)
+    try:
+        obj = s3.Object(BUCKET_NAME, image_name)
+        response = obj.delete()
+    except ClientError as e:
+        print(e)
+        return False
+    print("Deleted from S3!")
+    print(response)
+    return True
 
 
 def get_all_user_images(username):
@@ -65,7 +109,7 @@ def get_all_user_images(username):
         tags = obj["tags"]
         privacy = obj["privacy"]
         images_data.append(
-            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=True))
+            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy))
     return images_data
 
 
@@ -78,7 +122,7 @@ def get_all_public_images():
     dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
     table = dynamodb.Table(TABLE_NAME)
     response = table.scan(
-        FilterExpression=Attr('privacy').eq(True)
+        FilterExpression=Attr('privacy').eq(False)
     )
 
     images_data = list()
@@ -88,9 +132,8 @@ def get_all_public_images():
         tags = obj["tags"]
         privacy = obj["privacy"]
         username = obj["username"]
-        print(username)
         images_data.append(
-            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=True))
+            Image(image_id=image_id, username=username, description=description, tags=tags, privacy=privacy))
     return images_data
 
 
@@ -126,3 +169,50 @@ def store_image_data(image_binary, username, description, privacy):
     except ClientError as e:
         print(e)
     print("End of store_image_data")
+
+
+def delete_image_data(image_id):
+    """
+    Delete information about specific image from DynamoDB and S3.
+
+    :param image_id: string that uniquely identifies image data in DynamoDB and S3
+    :return: None
+    """
+    # If was successfully deleted from S3 then delete from DynamoDB
+    if delete_image_object(image_id):
+        dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+        table = dynamodb.Table(TABLE_NAME)
+        try:
+            table.delete_item(
+                Key={
+                    'image_id': image_id
+                }
+            )
+        except ClientError as e:
+            print(e)
+
+
+def update_image_data(image_id, description, privacy):
+    """
+    Update description and privacy setting for the specified image in DynamoDB
+
+    :param image_id: string uniequely idnetifies image data in DynamoDB
+    :param description: string description to update
+    :param privacy: boolean True if the image should be private
+    :return: None
+    """
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+    table = dynamodb.Table(TABLE_NAME)
+    try:
+        table.update_item(
+            Key={
+                'image_id': image_id
+            },
+            UpdateExpression='SET description = :val1, privacy = :val2',
+            ExpressionAttributeValues={
+                ':val1': description,
+                ':val2': privacy
+            }
+        )
+    except ClientError as e:
+        print(e)

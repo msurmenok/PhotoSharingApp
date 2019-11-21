@@ -18,8 +18,9 @@
         {% for image_data in images_data %}
         <div class="img-thumbnail col-lg-4 col-sm-6">
             <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
+            <div><br></div>
             <h6 class="card-title">by {{ image_data.username }}</h6>
-            <p class="card-text">{{ image_data.description }}</p>
+            <h6 class="card-text">{{ image_data.description }}</h6>
         </div>
         {% endfor %}
     </div>

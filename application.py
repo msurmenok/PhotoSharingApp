@@ -71,6 +71,11 @@ def edit_image(image_id):
             return render_template("edit.html", image_data=image_data)
         # Handle POST request
         if request.method == 'POST':
+            description = request.form["description"]
+            privacy = False
+            if request.form.get("privacy"):
+                privacy = True
+            aws_functions.update_image_data(image_id, description, privacy)
             return redirect(url_for('index'))
     return redirect(url_for('index'))
 

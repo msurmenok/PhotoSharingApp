@@ -201,3 +201,18 @@ def update_image_data(image_id, description, privacy):
     :param privacy: boolean True if the image should be private
     :return: None
     """
+    dynamodb = boto3.resource('dynamodb', region_name=REGION_NAME)
+    table = dynamodb.Table(TABLE_NAME)
+    try:
+        table.update_item(
+            Key={
+                'image_id': image_id
+            },
+            UpdateExpression='SET description = :val1, privacy = :val2',
+            ExpressionAttributeValues={
+                ':val1': description,
+                ':val2': privacy
+            }
+        )
+    except ClientError as e:
+        print(e)

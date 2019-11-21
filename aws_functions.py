@@ -190,3 +190,14 @@ def delete_image_data(image_id):
             )
         except ClientError as e:
             print(e)
+
+
+def update_image_data(image_id, description, privacy):
+    """
+    Update description and privacy setting for the specified image in DynamoDB
+
+    :param image_id: string uniequely idnetifies image data in DynamoDB
+    :param description: string description to update
+    :param privacy: boolean True if the image should be private
+    :return: None
+    """

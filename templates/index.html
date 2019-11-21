@@ -6,7 +6,7 @@
     <div class="row">
         <div class="col">
             <br>
-            {% if user_login == True %}
+            {% if user_login ==  True %}
             <h2> Welcome {{ username }}</h2>
             {% else %}
             <h2>Please log in to upload/view your images</h2>
@@ -50,11 +50,19 @@
         <div class="img-thumbnail col-lg-4 col-sm-6" id="{{ image_data.image_id }}">
             <img src="{{ image_data.image_src }}" class="card-img-top" alt={{ image_data.description }}>
             <div><br><h6>by {{ image_data.username }}</h6></div>
-            <div><p class="card-text">{{ image_data.description }}</p></div>
+            <div><h5 class="card-text">{{ image_data.description }}</h5></div>
+            <br>
+            <div><i>
+                {% if image_data.privacy%}
+                private image
+                {% else%}
+                public image
+                {% endif %}
+            </i></div>
+            <div><a href="/edit/{{ image_data.image_id }}">Edit</a></div>
             <div><a href="#!" onclick="deleteImage(this, '{{ image_data.image_id }}')">Delete</a></div>
         </div>
         {% endfor %}
-
     </div>
     {% endif %}
 </div>

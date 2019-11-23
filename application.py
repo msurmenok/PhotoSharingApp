@@ -4,17 +4,17 @@ SJSU CS 218 Fall 2019 TEAM 4
 from flask import Flask, render_template, request, redirect, url_for, session, \
     flash, make_response, abort
 from warrant import Cognito
-
+from settings import *
 import aws_functions
 from botocore.exceptions import ClientError
 
 from utils import allowed_file
 import os
 
-USER_POOL_ID = os.environ['USER_POOL_ID']
-CLIENT_ID = os.environ['CLIENT_ID']
-REGION = os.environ['REGION']
-SECRET_KEY = os.environ['SECRET_KEY']
+# USER_POOL_ID = os.environ['USER_POOL_ID']
+# CLIENT_ID = os.environ['CLIENT_ID']
+# REGION = os.environ['REGION']
+# SECRET_KEY = os.environ['SECRET_KEY']
 
 application = app = Flask(__name__)
 
@@ -98,6 +98,9 @@ def signup():
         email = request.form['email']
         password = request.form['password']  # hashed in warrant
         password_confirm = request.form['confirm_password']
+        if len(password) < 8:
+            flash("Password needs at least 8 characters")
+            return redirect(url_for('signup'))
         if password != password_confirm:
             flash("Passwords don't match!")
             return redirect(url_for('signup'), code=307)
@@ -130,6 +133,8 @@ def login():
             return redirect(url_for('index'))
         except ClientError as e:
             flash(e.response.get('Error').get('Message'))
+        except ValueError as e:
+            flash('Incorrect username or password.')
 
     return render_template("login.html")
 
